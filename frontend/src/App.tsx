@@ -1,10 +1,10 @@
 import type React from "react";
 import {
-  use,
   useState,
   type ChangeEvent,
   type ChangeEventHandler,
 } from "react";
+import axios from "axios";
 
 interface textProps {
   name: string;
@@ -12,7 +12,7 @@ interface textProps {
 }
 
 interface featureTextProps extends textProps {
-  value: string;
+  value: number;
 }
 
 interface sliderProps {
@@ -32,7 +32,7 @@ const PropertyTitle: React.FC<textProps> = ({ name, dimension }) => {
 const Slider: React.FC<sliderProps> = ({ onChange }) => {
   return (
     <div className="slider">
-      <input type="range" min="0" max="100" step="10" onChange={onChange} />
+      <input type="range" min="0.0" max="10.0" step="0.1" onChange={onChange} />
     </div>
   );
 };
@@ -40,7 +40,7 @@ const Slider: React.FC<sliderProps> = ({ onChange }) => {
 const Property: React.FC<featureTextProps> = ({ name, dimension, value }) => {
   return (
     <p className="characteristics">
-      {dimension} of the {name} (in cm) : {value}
+      {dimension} of the {name} (in cm) : {value.toFixed(1)}
     </p>
   );
 };
@@ -61,29 +61,30 @@ const PropertySlider: React.FC<props> = ({
 };
 
 const App: React.FC = () => {
-  const [sepalLengthSliderValue, setSepalLengthSliderValue] = useState(50);
-  const [sepalWidthSliderValue, setSepalWidthSliderValue] = useState(50);
-  const [petalLengthSliderValue, setPetalLengthSliderValue] = useState(50);
-  const [petalWidthSliderValue, setPetalWidthSliderValue] = useState(50);
+  const [sepalLengthSliderValue, setSepalLengthSliderValue] = useState(5.0);
+  const [sepalWidthSliderValue, setSepalWidthSliderValue] = useState(5.0);
+  const [petalLengthSliderValue, setPetalLengthSliderValue] = useState(5.0);
+  const [petalWidthSliderValue, setPetalWidthSliderValue] = useState(5.0);
+  const [species, setSpecies] = useState("");
 
   const handleSepalLengthSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setSepalLengthSliderValue(parseInt(newValue));
+    setSepalLengthSliderValue(parseFloat(newValue));
   };
 
   const handleSepalWidthSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setSepalWidthSliderValue(parseInt(newValue));
+    setSepalWidthSliderValue(parseFloat(newValue));
   };
 
   const handlePepalLengthSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setPetalLengthSliderValue(parseInt(newValue));
+    setPetalLengthSliderValue(parseFloat(newValue));
   };
 
   const handlePetalWidthSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setPetalWidthSliderValue(parseInt(newValue));
+    setPetalWidthSliderValue(parseFloat(newValue));
   };
 
   const sliders = [
@@ -117,21 +118,33 @@ const App: React.FC = () => {
     },
   ];
 
-  const handleClick = () => {
-    sliders.forEach(({ name, dimension, value }) =>
-      console.log(`${dimension} of ${name}: ${value}`)
-    );
+  const handleClick = async () => {
+    const data = {
+      sepal_length: sepalLengthSliderValue,
+      sepal_width: sepalWidthSliderValue,
+      petal_length: petalLengthSliderValue,
+      petal_width: petalWidthSliderValue,
+    };
+
+    const response = await axios.post("http://localhost:8000/prediction", data);
+    console.log(response.data);
+    setSpecies(response.data.species)
+
+    // sliders.forEach(({ name, dimension, value }) =>
+    //   console.log(`${dimension} of ${name}: ${value}`)
+    // );
   };
 
   return (
     <div className="container">
       <h1>IRIS PREDICTOR WEB APP</h1>
+      {species && <p>Prediction: {species}</p>}
       {sliders.map(({ name, dimension, value, handler, id }) => (
         <PropertySlider
           key={id}
           name={name}
           dimension={dimension}
-          value={value.toString()}
+          value={value}
           onChange={handler}
         />
       ))}
