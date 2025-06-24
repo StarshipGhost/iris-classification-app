@@ -1,0 +1,59 @@
+h1 {
+    font-size: 3rem;
+    font-weight: 400;
+    align-self: center;
+}
+
+.container {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    margin: 1.5rem;
+    gap: 1.25rem
+}
+
+.property-box {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: white;
+    border: lightgray thin solid ;
+}
+
+#prediction-button {
+    color: white;
+    background-color: #f25058;
+    border: ivory;
+    height: 3rem;
+    border-radius: 0.25rem;
+    font-size: large;
+}
+
+#prediction-button:hover {
+  background-color: #fc7e85;
+}
+
+.characteristics {
+    font-size: 0.80rem;
+    color: #6e6b6b;
+
+}
+
+.title-characteristics {
+    color: #3b3a3a;
+}
+
+.slider {
+    width: 90%;
+}
+
+input[type="range"] {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+
+
