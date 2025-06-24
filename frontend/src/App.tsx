@@ -61,58 +61,58 @@ const PropertySlider: React.FC<props> = ({
 };
 
 const App: React.FC = () => {
-  const [sliderValue1, setNewSliderValue1] = useState(50);
-  const [sliderValue2, setNewSliderValue2] = useState(50);
-  const [sliderValue3, setNewSliderValue3] = useState(50);
-  const [sliderValue4, setNewSliderValue4] = useState(50);
+  const [sepalLengthSliderValue, setSepalLengthSliderValue] = useState(50);
+  const [sepalWidthSliderValue, setSepalWidthSliderValue] = useState(50);
+  const [petalLengthSliderValue, setPetalLengthSliderValue] = useState(50);
+  const [petalWidthSliderValue, setPetalWidthSliderValue] = useState(50);
 
-  const handleSlider1Change = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleSepalLengthSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setNewSliderValue1(parseInt(newValue));
+    setSepalLengthSliderValue(parseInt(newValue));
   };
 
-  const handleSlider2Change = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleSepalWidthSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setNewSliderValue2(parseInt(newValue));
+    setSepalWidthSliderValue(parseInt(newValue));
   };
 
-  const handleSlider3Change = (event: ChangeEvent<HTMLInputElement>) => {
+  const handlePepalLengthSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setNewSliderValue3(parseInt(newValue));
+    setPetalLengthSliderValue(parseInt(newValue));
   };
 
-  const handleSlider4Change = (event: ChangeEvent<HTMLInputElement>) => {
+  const handlePetalWidthSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setNewSliderValue4(parseInt(newValue));
+    setPetalWidthSliderValue(parseInt(newValue));
   };
 
   const sliders = [
     {
       name: "Sepal",
       dimension: "Length",
-      value: sliderValue1,
-      handler: handleSlider1Change,
+      value: sepalLengthSliderValue,
+      handler: handleSepalLengthSliderChange,
       id: 1,
     },
     {
       name: "Sepal",
       dimension: "Width",
-      value: sliderValue2,
-      handler: handleSlider2Change,
+      value: sepalWidthSliderValue,
+      handler: handleSepalWidthSliderChange,
       id: 2,
     },
     {
       name: "Petal",
       dimension: "Length",
-      value: sliderValue3,
-      handler: handleSlider3Change,
+      value: petalLengthSliderValue,
+      handler: handlePepalLengthSliderChange,
       id: 3,
     },
     {
       name: "Petal",
       dimension: "Width",
-      value: sliderValue4,
-      handler: handleSlider4Change,
+      value: petalWidthSliderValue,
+      handler: handlePetalWidthSliderChange,
       id: 4,
     },
   ];
