@@ -1,157 +1,150 @@
 import type React from "react";
-import {
-  useState,
-  type ChangeEvent,
-  type ChangeEventHandler,
-} from "react";
+import { useState, type ChangeEvent, type ChangeEventHandler } from "react";
 import axios from "axios";
+import { Route, Routes } from "react-router-dom";
+import PropertySliders from "./components/PropertySliders";
+import { useNavigate } from "react-router-dom";
 
-interface textProps {
-  name: string;
-  dimension: string;
+interface formProps {
+  sliders: {
+    name: string;
+    dimension: string;
+    value: number;
+    handler: ChangeEventHandler<HTMLInputElement>;
+    id: number;
+  }[];
+  speciesState: {
+    speciesValue: string;
+    setSpeciesFunction: React.Dispatch<React.SetStateAction<string>>;
+  };
 }
 
-interface featureTextProps extends textProps {
-  value: number;
-}
 
-interface sliderProps {
-  onChange: ChangeEventHandler<HTMLInputElement>;
-}
+const Form: React.FC<formProps> = ({ sliders, speciesState }) => {
+  const navigate = useNavigate();
+  const handleClick = async () => {
+    const [ sepalLength, sepalWidth, petalLength, petalWidth] = sliders.map(({value}) => value);
+    const data = {
+      sepal_length: sepalLength,
+      sepal_width: sepalWidth,
+      petal_length: petalLength,
+      petal_width: petalWidth,
+    };
 
-interface props extends featureTextProps, sliderProps {}
+    const response = await axios.post("http://localhost:8000/prediction", data);
+    console.log(response.data);
+    speciesState.setSpeciesFunction(response.data.species);
+    navigate("/prediction");
+  };
 
-const PropertyTitle: React.FC<textProps> = ({ name, dimension }) => {
   return (
-    <p className="title-characteristics">
-      {name} {dimension}
-    </p>
-  );
-};
-
-const Slider: React.FC<sliderProps> = ({ onChange }) => {
-  return (
-    <div className="slider">
-      <input type="range" min="0.0" max="10.0" step="0.1" onChange={onChange} />
+    <div className="container">
+      <h1>IRIS PREDICTOR WEB APP</h1>
+      <PropertySliders sliders={sliders} />
+      <button id="prediction-button" onClick={handleClick}>
+        PREDICTION
+      </button>
     </div>
   );
 };
 
-const Property: React.FC<featureTextProps> = ({ name, dimension, value }) => {
-  return (
-    <p className="characteristics">
-      {dimension} of the {name} (in cm) : {value.toFixed(1)}
-    </p>
-  );
-};
+const SpeciesPrediction : React.FC<formProps> | null = ({ speciesState : { speciesValue } }) => {
+  switch (speciesValue) {
+    case 'Setosa':
+      return <img src="src/assets/iris+setosa+29.jpg" />
+    case 'Versicolor':
+      return <img src="src/assets/Blue_Flag,_Ottawa.jpg" />
+    case 'Virginica':
+      return <img src="src/assets/iris_virginica_virginica_lg.jpg" />
+    default:
+      return null;
+  }
+}
 
-const PropertySlider: React.FC<props> = ({
-  name,
-  dimension,
-  value,
-  onChange,
-}) => {
+const Prediction: React.FC<formProps> = ({sliders, speciesState}) => {
+
   return (
-    <div className="property-box">
-      <PropertyTitle name={name} dimension={dimension} />
-      <Slider onChange={onChange} />
-      <Property name={name} dimension={dimension} value={value} />
+    <div className="prediction-property-container">
+      <SpeciesPrediction speciesState={speciesState} sliders={[]}/>
+      {sliders.map(({name, dimension, value}) => <div className="prediction-property-box"> {name} {dimension}: {value}</div>)}
+      <div className="result-box">
+        RESULT: {speciesState.speciesValue}
+      </div>
     </div>
   );
 };
 
 const App: React.FC = () => {
-  const [sepalLengthSliderValue, setSepalLengthSliderValue] = useState(5.0);
-  const [sepalWidthSliderValue, setSepalWidthSliderValue] = useState(5.0);
-  const [petalLengthSliderValue, setPetalLengthSliderValue] = useState(5.0);
-  const [petalWidthSliderValue, setPetalWidthSliderValue] = useState(5.0);
+  const [sepalLength, setSepalLength] = useState(5.0);
+  const [sepalWidth, setSepalWidth] = useState(5.0);
+  const [petalLength, setPetalLength] = useState(5.0);
+  const [petalWidth, setPetalWidth] = useState(5.0);
   const [species, setSpecies] = useState("");
 
-  const handleSepalLengthSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleSepalLengthChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setSepalLengthSliderValue(parseFloat(newValue));
+    setSepalLength(parseFloat(newValue));
   };
 
-  const handleSepalWidthSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleSepalWidthChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setSepalWidthSliderValue(parseFloat(newValue));
+    setSepalWidth(parseFloat(newValue));
   };
 
-  const handlePepalLengthSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handlePepalLengthChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setPetalLengthSliderValue(parseFloat(newValue));
+    setPetalLength(parseFloat(newValue));
   };
 
-  const handlePetalWidthSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handlePetalWidthChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setPetalWidthSliderValue(parseFloat(newValue));
+    setPetalWidth(parseFloat(newValue));
+  };
+
+  const speciesState = {
+    speciesValue: species,
+    setSpeciesFunction: setSpecies,
   };
 
   const sliders = [
     {
       name: "Sepal",
       dimension: "Length",
-      value: sepalLengthSliderValue,
-      handler: handleSepalLengthSliderChange,
+      value: sepalLength,
+      handler: handleSepalLengthChange,
       id: 1,
     },
     {
       name: "Sepal",
       dimension: "Width",
-      value: sepalWidthSliderValue,
-      handler: handleSepalWidthSliderChange,
+      value: sepalWidth,
+      handler: handleSepalWidthChange,
       id: 2,
     },
     {
       name: "Petal",
       dimension: "Length",
-      value: petalLengthSliderValue,
-      handler: handlePepalLengthSliderChange,
+      value: petalLength,
+      handler: handlePepalLengthChange,
       id: 3,
     },
     {
       name: "Petal",
       dimension: "Width",
-      value: petalWidthSliderValue,
-      handler: handlePetalWidthSliderChange,
+      value: petalWidth,
+      handler: handlePetalWidthChange,
       id: 4,
     },
   ];
 
-  const handleClick = async () => {
-    const data = {
-      sepal_length: sepalLengthSliderValue,
-      sepal_width: sepalWidthSliderValue,
-      petal_length: petalLengthSliderValue,
-      petal_width: petalWidthSliderValue,
-    };
-
-    const response = await axios.post("http://localhost:8000/prediction", data);
-    console.log(response.data);
-    setSpecies(response.data.species)
-
-    // sliders.forEach(({ name, dimension, value }) =>
-    //   console.log(`${dimension} of ${name}: ${value}`)
-    // );
-  };
-
   return (
-    <div className="container">
-      <h1>IRIS PREDICTOR WEB APP</h1>
-      {species && <p>Prediction: {species}</p>}
-      {sliders.map(({ name, dimension, value, handler, id }) => (
-        <PropertySlider
-          key={id}
-          name={name}
-          dimension={dimension}
-          value={value}
-          onChange={handler}
-        />
-      ))}
-      <button id="prediction-button" onClick={handleClick}>
-        PREDICTION
-      </button>
-    </div>
+    <Routes>
+      <Route
+        path="/"
+        element={<Form sliders={sliders} speciesState={speciesState} />}
+      />
+      <Route path="/prediction" element={<Prediction sliders={sliders} speciesState={speciesState} />} />
+    </Routes>
   );
 };
 
