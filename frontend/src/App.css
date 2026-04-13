@@ -66,6 +66,20 @@ img {
     border: gray thin solid;
 }
 
+.prediction-button {
+    margin-top: 1rem;
+    background-color: #05fa3a;
+    color: white;
+    font-size: 1.5rem;
+    padding: 1rem 0;
+    border: black thin solid;
+    cursor: pointer
+}
+
+.prediction-button:hover {
+    background-color: #75f090;
+}
+
 .characteristics {
     font-size: 0.80rem;
     color: #6e6b6b;

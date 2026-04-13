@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const API_URL =
   import.meta.env.MODE === "development"
     ? "http://localhost:8000"
-    : "https://iris-classification-app-w42n.onrender.com";
+    : "https://iris-classification-app-1.onrender.com";
 
 interface formProps {
   sliders: {
@@ -22,6 +22,7 @@ interface formProps {
     speciesValue: string;
     setSpeciesFunction: React.Dispatch<React.SetStateAction<string>>;
   };
+  reset: () => void;
 }
 
 
@@ -66,15 +67,22 @@ const SpeciesPrediction : React.FC<formProps> | null = ({ speciesState : { speci
   }
 }
 
-const Prediction: React.FC<formProps> = ({sliders, speciesState}) => {
-
+const Prediction: React.FC<formProps> = ({sliders, speciesState, reset}) => {
+  const navigate = useNavigate();
+  const handleReset = () => {
+    navigate('/')
+    reset();
+  }
   return (
     <div className="prediction-property-container">
-      <SpeciesPrediction speciesState={speciesState} sliders={[]}/>
+      <SpeciesPrediction speciesState={speciesState} sliders={[]} reset={function (): void {
+        throw new Error("Function not implemented.");
+      } }/>
       {sliders.map(({name, dimension, value}) => <div className="prediction-property-box"> {name} {dimension}: {value}</div>)}
       <div className="result-box">
         RESULT: {speciesState.speciesValue}
       </div>
+      <button className="prediction-button" onClick={handleReset}>BACK</button>
     </div>
   );
 };
@@ -146,9 +154,13 @@ const App: React.FC = () => {
     <Routes>
       <Route
         path="/"
-        element={<Form sliders={sliders} speciesState={speciesState} />}
+        element={<Form sliders={sliders} speciesState={speciesState} reset={function (): void {
+          throw new Error("Function not implemented.");
+        } } />}
       />
-      <Route path="/prediction" element={<Prediction sliders={sliders} speciesState={speciesState} />} />
+      <Route path="/prediction" element={<Prediction sliders={sliders} speciesState={speciesState} reset={function (): void {
+        throw new Error("Function not implemented.");
+      } } />} />
     </Routes>
   );
 };
