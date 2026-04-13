@@ -5,6 +5,11 @@ import { Route, Routes } from "react-router-dom";
 import PropertySliders from "./components/PropertySliders";
 import { useNavigate } from "react-router-dom";
 
+const API_URL =
+  import.meta.env.MODE === "development"
+    ? "http://localhost:8000"
+    : "https://iris-classification-app-w42n.onrender.com";
+
 interface formProps {
   sliders: {
     name: string;
@@ -31,7 +36,7 @@ const Form: React.FC<formProps> = ({ sliders, speciesState }) => {
       petal_width: petalWidth,
     };
 
-    const response = await axios.post("http://localhost:8000/prediction", data);
+    const response = await axios.post(`${API_URL}/prediction`, data);
     console.log(response.data);
     speciesState.setSpeciesFunction(response.data.species);
     navigate("/prediction");
