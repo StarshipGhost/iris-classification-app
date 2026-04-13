@@ -32,6 +32,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def root():
+    return {"message": "Iris classification API is running"}
+
 @app.post("/prediction")
 async def predict(features: IrisFeatures):
     X = pd.DataFrame(
