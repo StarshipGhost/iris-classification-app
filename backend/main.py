@@ -22,6 +22,7 @@ app = FastAPI()
 origins = [
     "http://localhost:5173",
     "https://starshipghost.github.io"
+    "https://starshipghost.github.io/iris-classification-app"
 ]
 
 app.add_middleware(
