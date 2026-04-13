@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 import joblib
-import numpy as np
 import pandas as pd
 
 model = joblib.load("./model/notebooks/svc_best_model.pkl")
@@ -22,6 +21,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:5173",
+    "https://starshipghost.github.io"
 ]
 
 app.add_middleware(
